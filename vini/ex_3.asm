@@ -4,30 +4,35 @@
 .text
 .globl main
 
-#t1 - índice
-#t0 - é o endereço base do vetor
-#t2 - tem o offset
-#t3 tem o elemento atual
-
 main:
-    li $t1, 6
+    la   $t0, vetor
+    la   $t1, vetor
+    addi $t1, $t1, 20
+    li   $t2, 3
 
-    la $t0, vetor
-    sll $t2, $t1, 2
-    addu $t0, $t0, $t2
+inverter_loop:
+    lw   $t3, 0($t0)
+    lw   $t4, 0($t1)
+    sw   $t4, 0($t0)
+    sw   $t3, 0($t1)
+    addi $t0, $t0, 4
+    addi $t1, $t1, -4
+    addi $t2, $t2, -1
+    bnez $t2, inverter_loop
 
-    lw $t3, 0($t0)
+    la   $t0, vetor
+    li   $t1, 6
 
-
-#degub         
 debug_loop:
-    lw   $a0, 0($t0)      
-    li   $v0, 1           
+    lw   $a0, 0($t0)
+    li   $v0, 1
     syscall
+    li   $a0, 32
+    li   $v0, 11
+    syscall
+    addi $t0, $t0, 4
+    addi $t1, $t1, -1
+    bnez $t1, debug_loop
 
-    li   $a0, 32          
-    li   $v0, 11          
+    li   $v0, 10
     syscall
-    addi $t0, $t0, 4     
-    addi $t1, $t1, -1     
-    bnez $t1, debug_loop  
